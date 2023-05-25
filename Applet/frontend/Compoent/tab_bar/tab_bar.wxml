@@ -1,0 +1,9 @@
+<!--pages/Compoent/tab_bar/tab_bar.wxml-->
+
+<!--底部菜单栏-->
+<cover-view class="tab_bar">
+  <!--循环加载组件-->
+  <cover-view class="tab-bar-item" wx:for="{{list}}" wx:key="index" data-index="index" data-path="/{{item.pagePath}} "bindtap="switch_tab">
+    <cover-view class="tab-bar-item-text">{{item.text}}</cover-view>
+  </cover-view>
+</cover-view>

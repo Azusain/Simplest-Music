@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/root/git-repo/Simplest-Music/Web/backend/build",
+  "command": "/usr/bin/g++  -I/usr/include/mysql -g -o CMakeFiles/Simplest-Music.dir/main.cpp.o -c /root/git-repo/Simplest-Music/Web/backend/main.cpp",
+  "file": "/root/git-repo/Simplest-Music/Web/backend/main.cpp"
+}
+]

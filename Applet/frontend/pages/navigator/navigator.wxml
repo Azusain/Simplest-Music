@@ -1,0 +1,16 @@
+<!--pages/navigator/navigator.wxml-->
+<view class="container_sub">
+  <!--页面主标题-->
+  <view class="title">极简主义音乐</view>
+  <view class="top_tip">Simplest Music</view>
+  <!--不同用户版本入口按钮-->
+  <view class="power" wx:key="title" wx:for="{{powerList}}" wx:for-item="power">
+    <view class="power_info" data-index="{{index}}" bindtap="onClickPowerInfo">
+      <view class="power_info_text">
+        <view class="power_info_text_title">{{power.title}}</view>
+        <view class="power_info_text_tip">{{power.tip}}</view>
+      </view>
+    </view>
+  </view>
+</view>
+  

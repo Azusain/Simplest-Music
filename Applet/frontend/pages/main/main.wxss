@@ -1,0 +1,22 @@
+/* pages/main/main.wxss */.container_3{
+  height: 160px;
+}
+ 
+.item{
+  height: 100%;
+  line-height: 150px;
+  text-align: center;
+}
+ 
+swiper-item:nth-child(1) .item{
+  background-color: burlywood;
+}
+swiper-item:nth-child(2) .item{
+  background-color: yellow;
+}
+swiper-item:nth-child(3) .item{
+  background-color: pink;
+}
+swiper-item:nth-child(4) .item{
+  background-color: aqua;
+}

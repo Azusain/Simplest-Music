@@ -1,0 +1,29 @@
+
+
+.tab_bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 95px;
+  background-color: transparent;
+  display: flex;
+  overflow: auto;
+}
+
+.tab-bar-item{
+  flex: 1;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+
+
+
+.tab-bar-item-text{
+  font-size: 10px;
+  line-height: 18px;
+}

@@ -1,0 +1,5 @@
+/root/git-repo/Simplest-Music/Web/backend/build/CMakeFiles/edit_cache.dir
+/root/git-repo/Simplest-Music/Web/backend/build/CMakeFiles/rebuild_cache.dir
+/root/git-repo/Simplest-Music/Web/backend/build/CMakeFiles/Simplest-Music.dir
+/root/git-repo/Simplest-Music/Web/backend/build/CMakeFiles/package_source.dir
+/root/git-repo/Simplest-Music/Web/backend/build/CMakeFiles/package.dir

@@ -1,0 +1,1 @@
+/usr/bin/g++ -g -rdynamic CMakeFiles/Simplest-Music.dir/main.cpp.o -o Simplest-Music   -L/usr/lib64/mysql  -Wl,-rpath,/usr/lib64/mysql -lmysqlclient 
