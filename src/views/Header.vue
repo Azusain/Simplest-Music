@@ -2,17 +2,15 @@
     <div class="content-header">
       <div class="left-header">
         <el-button  @click="clickFold" icon="el-icon-menu" size="mini"></el-button>
-        <span class="text">首页</span>
+        <span class="text">{{this.$route.name}}</span>
       </div>
       <div class="right-header">
-        <el-dropdown>
+        <el-dropdown @command="handleClick">
           <span class="el-dropdown-link">
             <img src="../login.jpg" class="user">
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>个人中心</el-dropdown-item>
-            <el-dropdown-item>系统反馈</el-dropdown-item>
-            <el-dropdown-item>退出登录</el-dropdown-item>
+            <el-dropdown-item command="cancel">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -20,6 +18,7 @@
 </template>
 
 <script>
+    import Cookie from 'js-cookie'
     export default {
         name: "Header",
         data(){
@@ -28,6 +27,15 @@
         methods:{
           clickFold(){
             this.$store.commit('collapseMenu')
+          },
+          handleClick(command){
+            if(command==='cancel'){
+              console.log('登出')
+              Cookie.remove('token')
+              Cookie.remove('menu')
+              //跳转到登录页面
+              this.$router.push('/login')
+            }
           }
         }
     }
@@ -35,14 +43,14 @@
 
 <style lang="less" scoped>
   .content-header{
-    background-color: #333;
+    background-color:	#d3d7d44f;
     height: 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
     .text{
-      color:#fff;
+      color:#333;
       font-size: 14px;
       margin-left: 10px;
     }

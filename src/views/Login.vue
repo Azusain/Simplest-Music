@@ -4,21 +4,21 @@
       <div class="content" >
         <h5>登录账号</h5>
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-          <el-form-item label="用户名" prop="id">
-            <el-input type="id" v-model="ruleForm.id" autocomplete="off"></el-input>
+          <el-form-item label="用户名" prop="userName">
+            <el-input type="id" v-model="ruleForm.userName" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+          <el-form-item label="密码" prop="password">
+            <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
+            <el-button type="primary" @click="submitForm">登录</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
           </el-form-item>
         </el-form>
       </div>
       <div class="ButtonNull">
         <el-row>
-          <el-button type="primary" class="possess">没有账号，点击注册</el-button>
+          <el-button type="primary" class="possess" @click="jumpto">没有账号，点击注册</el-button>
         </el-row>
       </div>
     </div>
@@ -26,65 +26,45 @@
 </template>
 
 <script>
+  import Mock from 'mockjs'
+  import Cookie from 'js-cookie'
+  import {personal, UserLogin} from "../api";
+
   export default {
     name: "Login",
     data() {
-      var validateId = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入用户名'));
-        }
-      };
-      var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'));
-        } else {
-          if (this.ruleForm.checkPass !== '') {
-            this.$refs.ruleForm.validateField('checkPass');
-          }
-          callback();
-        }
-      };
       return {
         ruleForm: {
-          id:'',
-          pass: '',
+          userName:'',
+          password: '',
         },
         rules: {
-          id: [
-            { validator: validateId, trigger: 'blur' }
+          userName: [
+            { required:true, trigger:'blur',message:'请输入用户名'}
           ],
-          pass: [
-            { validator: validatePass, trigger: 'blur' }
+          password: [
+            { required:true, trigger:'blur',message:'请输入密码'}
           ],
         }
       };
     },
     methods: {
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
+      submitForm() {
+        this.$refs.ruleForm.validate((valid) => {
           if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            getMenu(this.form).then(({ data }) => {
+            UserLogin(this.ruleForm).then((data)=>{
               console.log(data)
-              if (data.code === 20000) {
-                // token信息存入cookie用于不同页面间的通信
-                Cookie.set('token', data.data.token)
-
-                // 获取菜单的数据，存入store中
-                this.$store.commit('setMenu', data.data.menu)
+              if(data.code===20000){
+                Cookie.set('token',data.token)
+                this.$store.commit('setMenu', data.data)
                 this.$store.commit('addMenu', this.$router)
-                // 跳转到首页
-                this.$router.push('/home')
-              } else {
-                this.$message.error(data.data.message);
+                this.$router.push('/first')
+              }else {
+                this.$message.error(data.msg)
               }
+            })
+            personal({userName:this.ruleForm.userName}).then((data)=>{
+              console.log(data)
             })
           }
         })
@@ -92,30 +72,10 @@
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      /*submit() {
-        // // token信息
-        // const token = Mock.Random.guid()
-        // 校验通过
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            getMenu(this.form).then(({ data }) => {
-              console.log(data)
-              if (data.code === 20000) {
-                // token信息存入cookie用于不同页面间的通信
-                Cookie.set('token', data.data.token)
+      jumpto(){
+        this.$router.push('/regist')
+      }
 
-                // 获取菜单的数据，存入store中
-                this.$store.commit('setMenu', data.data.menu)
-                this.$store.commit('addMenu', this.$router)
-                // 跳转到首页
-                this.$router.push('/home')
-              } else {
-                this.$message.error(data.data.message);
-              }
-            })
-          }
-        })
-      }*/
     }
 
   }

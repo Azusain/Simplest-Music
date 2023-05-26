@@ -1,31 +1,32 @@
 <template>
   <div class="manage">
-    <!--&lt;!&ndash;提交&ndash;&gt;-->
+    <!--提交的页面-->
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
       width="50%"
       :before-close="handleClose">
       <el-form ref="form" :rules="rules":inline="true" :model="form" label-width="80px">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="form.name"></el-input>
+        <el-form-item label="仓库编号" prop="depotId">
+          <el-input v-model="form.depotId"></el-input>
         </el-form-item>
-        <el-form-item label="年龄" prop="age">
-          <el-input v-model="form.age"></el-input>
+        <el-form-item label="订单号" prop="indentId">
+          <el-input v-model="form.indentId"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="sex">
-          <el-select v-model="form.sex" placeholder="请选择">
-            <el-option label="男" :value="1"></el-option>
-            <el-option label="女" :value="0"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="出生日期" prop="birth">
+
+        <el-form-item label="入库时间" prop="enterDepotTime">
           <el-date-picker
-            v-model="form.birth"
+            v-model="form.enterDepotTime"
             type="date"
             placeholder="选择日期"
-            value-format="yyyy-MM-DD"><!--&lt;!&ndash;调整输出的格式&ndash;&gt;-->
+            value-format="yyyy-MM-dd">
           </el-date-picker>
+        </el-form-item>
+        <el-form-item label="支付方式" prop="payWay">
+          <el-radio-group v-model="form.payWay">
+            <el-radio :label="1">支付宝</el-radio>
+            <el-radio :label="0">微信</el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -33,20 +34,25 @@
       <el-button type="primary" @click="submit">确 定</el-button>
       </span>
     </el-dialog>
+    <!--新增框-->
     <div class="manage-header">
       <el-button @click="handleAdd" type="primary">
         + 新增
       </el-button>
-      <!--&lt;!&ndash; form搜索区域 &ndash;&gt;-->
+      <!--搜索框-->
       <el-form :inline="true" :model="userForm">
+        <e-form-item>
+          <el-button type="primary" @click="fanhui">返回</el-button>
+        </e-form-item>
         <el-form-item>
-          <el-input placeholder="请输入名称" v-model="userForm.name"></el-input>
+          <el-input placeholder="请输入订单号" v-model="indentId"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
+    <!--页面表格-->
     <div class="common-table">
       <!-- &lt;!&ndash;引入table组件构建表格&ndash;&gt;-->
       <el-table
@@ -54,38 +60,43 @@
         :data="tableData"
         style="width: 100%" height="90%">
         <el-table-column
-          prop="name"
-          label="姓名">
+          prop="depotId"
+          label="仓库编号">
         </el-table-column>
         <el-table-column
-          prop="sex"
-          label="性别">
+          prop="indentId"
+          label="订单号">
+        </el-table-column>
+        <el-table-column prop="payWay" label="支付方式">
           <template slot-scope="scope">
-            <span>{{scope.row.sex==1?'男':'女'}}</span>
+            <el-tag v-if="scope.row.payWay===0" >微信</el-tag>
+            <el-tag v-if="scope.row.payWay===1" >支付宝</el-tag>
           </template>
         </el-table-column>
+
         <el-table-column
-          prop="age"
-          label="年龄">
+          prop="enterDepotTime"
+          label="入库时间">
         </el-table-column>
-        <el-table-column
-          prop="birth"
-          label="出生日期">
-        </el-table-column>
+
+
         <el-table-column
           prop="birth"
           label="操作">
-          <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
+          &lt;!&ndash;          <template slot-scope="scope">
+          <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+        </template>&ndash;&gt;
+        </el-table-column>-->
       </el-table>
+
+      <!--分页-->
       <div class="pager">
         <el-pagination
           layout="prev, pager, next"
           :total="total"
-          @current-change="handlePage">
+          @current-change="handlePage"
+          @size-change="xxx">
         </el-pagination>
       </div>
     </div>
@@ -93,32 +104,50 @@
 </template>
 
 <script>
-  import {getUser,addUser,editUser,delUser} from "../api";
+  import {
+    addTransport,
+    editTransport,
+    delTransport,
+    getTransport,
+    PageTransport,
+    searchTransport,
+    addDepot,
+    editDepot,
+    delDepot,
+    getDepot,
+    PageDepot,
+    searchDepot,
+    editEnterDepot,
+    addEnterDepot,
+    delEnterDepot,
+    getEnterDepot,
+    searchEnterDepot,
+    PageEnterDepot
+  } from "../api";
 
   export default {
-    name: "Workers",
+    name: "Transport",
     data() {
       return {
         dialogVisible: false,
         form:{
-          name:'',
-          age:'',
-          sex:'',
-          birth:'',
-          addr:''
+          depotId:'',
+          indentId:'',
+          payWay:'',
+          enterDepotTime:'',
         },
         rules:{
-          name:[
-            { required: true, message: '请输入姓名'}
+          depotId:[
+            { required: true, message: '请输入仓库编号'}
           ],
-          age:[
-            { required: true, message: '请输入年龄'}
+          indentId:[
+            { required: true, message: '请输入订单号'}
           ],
-          sex:[
-            { required: true, message: '请选择性别'}
+          payWay:[
+            { required: true, message: '请输入支付方式'}
           ],
-          birth:[
-            { required: true, message: '请选择出生日期'}
+          enterDepotTime:[
+            { required: true, message: '请选择入库时间'}
           ],
         },
         tableData:[],
@@ -126,28 +155,40 @@
         total:0,  //当前的总条数
         pageData: {
           page: 1,
-          limit: 10
+          pagesize: 10,
+
         },
+        indentId:'',
         userForm: {
-          name: ''
-        }
+          indentId: ''
+        },
+        now:1,
+        data:0
       }
     },
     methods:{
       //提交用户表单
       submit(){
-        this.$refs.form.validate((valid)=>{
+        this.$refs.form.validate((valid)=>{/!*表单校验*!/
           //console.log(valid,'valid')
           if(valid){
             if (this.modalType === 0) {
-              addUser(this.form).then(() => {
+              addEnterDepot(this.form).then(() => {
                 // 重新获取列表的接口
+                this.$message({
+                  type: 'success',
+                  message: '添加成功!'
+                });
                 this.getList()
+              }).finally(()=>{
+                this.handlePage(this.now)
               })
             } else {
-              editUser(this.form).then(() => {
+              editEnterDepot(this.form).then(() => {
                 // 重新获取列表的接口
                 this.getList()
+              }).finally(()=>{
+                this.handlePage(this.now)
               })
             }
             console.log(this.form,'form')
@@ -168,26 +209,34 @@
       cancel(){
         this.handleClose()
       },
+      fanhui() {
+        this.getList()
+      },
+      //修改
       handleEdit(row) {
         this.modalType = 1
         this.dialogVisible = true
         // 注意需要对当前行数据进行深拷贝，否则会出错
         this.form = JSON.parse(JSON.stringify(row))
+        return
       },
+      //删除
       handleDelete(row) {
-        /*弹窗*/
+        /!*弹窗*!/
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delUser({ id: row.id }).then(() => {
+          delEnterDepot({indentId:row.indentId}).then(() => {
             this.$message({
               type: 'success',
               message: '删除成功!'
             });
             // 重新获取列表的接口
             this.getList()
+          }).finally(()=>{
+            this.handlePage(this.now)
           })
 
         }).catch(() => {
@@ -199,10 +248,11 @@
       },
       getList(){
         // 获取的列表的数据
-        getUser({params: {...this.userForm, ...this.pageData}}).then(({ data }) => {
-          console.log(data)
-          this.tableData = data.list
-          this.total = data.count || 0
+        getEnterDepot({params: {...this.userForm, ...this.pageData}}).then(res => {
+          console.log(res)
+          this.tableData = res.data
+          console.log(res.data.length)
+          this.total = res.data.length || 0
         })
       },
       handleAdd() {
@@ -211,21 +261,40 @@
       },
       // 选择页码的回调函数
       handlePage(val) {
-        // console.log(val, 'val')
-        this.pageData.page = val
-        this.getList()
+        this.now=val
+        PageEnterDepot({
+          params:{
+            page:val,
+            pagesize:10
+          }
+        }).then(res=>{
+          this.total=res.data.totalCount
+          this.tableData = res.data.rows
+          console.log("tableData"+this.tableData)
+        })
+      },
+      xxx(val){
+        console.log("current:"+val)
       },
       // 列表的查询
       onSubmit() {
-        this.getList()
+        searchEnterDepot({indentId:this.indentId}).then(res=>{
+          console.log("11111111111111111111111111111111111111111")
+          this.tableData=[]
+          this.tableData.push(res.data)
+        })
+
       }
     },
     mounted() {
-      getUser().then(({data})=>{
+      getEnterDepot().then(({data})=>{
         console.log(data)
         this.tableData=data.list
       })
       this.getList()//调用
+      this.handlePage(this.now)
+      /*           this.handlePage()
+                 this.onsubmit()*/
     }
 
   }
@@ -249,6 +318,6 @@
       }
     }
   }
-</style>
 
+</style>
 

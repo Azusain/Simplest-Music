@@ -3,18 +3,13 @@ import Router from 'vue-router'
 import Main from "../views/Main";
 import Login from "../views/Login";
 import Regist from "../views/Regist";
-import First from "../views/First";
-import Workers from "../views/Workers";
-import Customers from "../views/Customers";
-import Package from "../views/Package";
-import Finance from "../views/Finance";
-import Inventory from "../views/Inventory";
-import Inwarehouse from "../views/Inwarehouse";
-import Outwarehouse from "../views/Outwarehouse";
-import Carpossess from "../views/Carpossess";
-import Carusing from "../views/Carusing";
-import Tasks from "../views/Tasks";
-import Accidents from "../views/Accidents";
+import StudentSituation from "../views/StudentSituation";
+import HomeworkClass from "../views/HomeworkClass"
+import ExaminationClass from "../views/ExaminationClass";
+import HomeworkDetail from "../views/HomeworkDetail";
+import StudentDetail from "../views/StudentDetail";
+import ExaminationDetail from "../views/ExaminationDetail";
+
 
 Vue.use(Router);
 
@@ -23,11 +18,11 @@ export default new Router({
     path: '/',
     component: Main,
     name: 'Main',
-    redirect:'first',
+    redirect:'/login',
     children:[
-      {path: 'first', component: First},
-      {path: 'workers', component: Workers},
-      {path: 'customers', component: Customers},
+/*      {path: 'first', name:'首页',component: First},
+      {path: 'workers', name:'员工管理',component: Workers},
+      {path: 'customers', name:'客户管理',component: Customers},
       {path: 'package',component:Package},
       {path:'finance',component:Finance},
       {path:'warehouse/inventory',component:Inventory},
@@ -36,12 +31,26 @@ export default new Router({
       {path:'transport/carpossess',component:Carpossess},
       {path:'transport/carusing',component:Carusing},
       {path:'distribution/tasks',component:Tasks},
-      {path:'distribution/accidents',component:Accidents}
+      {path:'distribution/accidents',component:Accidents}*/
+      {
+        path: '/student/studentDetail',component:StudentDetail
+      },{
+        path:'/student/studentDetail/studentSituation',component: StudentSituation
+      },
+      {
+        path: '/homework/homeworkClass',component:HomeworkClass
+      },{
+        path:'/examination/examinationClass',component: ExaminationClass
+      },{
+        path: '/homework/homeworkClass/homeworkDetail',component:HomeworkDetail
+      },{
+        path:'/examination/examinationClass/examinationDetail',component: ExaminationDetail
+      }
     ]
   },{
-    path: '/login', component: Login
+    path: '/login', name:'login',component: Login
   },{
-    path: '/regist', component: Regist
+    path: '/regist', name:'regist',component: Regist
   }]
 });
 

@@ -1,12 +1,11 @@
+<!--考试的内容展示-->
 <template>
-  <div>
-    <h1>personal中心</h1>
-  </div>
+  <h4>我是考试细节</h4>
 </template>
 
 <script>
     export default {
-        name: "Personalcenter"
+        name: "TestDetail"
     }
 </script>
 

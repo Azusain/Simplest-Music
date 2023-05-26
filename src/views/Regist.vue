@@ -1,28 +1,34 @@
 <template>
   <div class="page">
     <div class="total">
-        <div class="ButtonNull">
+      <div class="ButtonNull">
           <el-row>
-            <el-button type="primary" class="possess">已有账号，直接登录</el-button>
+            <el-button type="primary" class="possess" @click="jumpto()">已有账号，直接登录</el-button>
           </el-row>
       </div>
       <div class="content" >
         <h5>注册账号</h5>
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-          <el-form-item label="用户名" prop="id">
-            <el-input type="id" v-model="ruleForm.id" autocomplete="off"></el-input>
+          <el-form-item label="用户名" prop="userName">
+            <el-input type="id" v-model="ruleForm.userName" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+          <el-form-item label="电话号码" prop="phoneNumber">
+            <el-input v-model.number="ruleForm.phoneNumber"></el-input>
           </el-form-item>
-          <el-form-item label="确认密码" prop="checkPass">
-            <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+          <el-form-item label="密码" prop="password">
+            <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="电话号码" prop="age">
-            <el-input v-model.number="ruleForm.age"></el-input>
+          <el-form-item label="确认密码" prop="checkPassword">
+            <el-input type="password" v-model="ruleForm.checkPassword" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model.number="ruleForm.email"></el-input>
+          </el-form-item>
+          <el-form-item label="个性签名" prop="signature">
+            <el-input type="signature" v-model="ruleForm.signature" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">点击注册</el-button>
+            <el-button type="primary" @click="submitForm">点击注册</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
           </el-form-item>
         </el-form>
@@ -32,32 +38,17 @@
 </template>
 
 <script>
+  import { UserRegist} from "../api";
+
     export default {
       name: "Regist",
       data() {
-        var validateId = (rule, value, callback) => {
-          if (value === '') {
-            callback(new Error('请输入用户名'));
-          }
-        };
-        var checkAge = (rule, value, callback) => {
-          if (!value) {
-            return callback(new Error('电话号码不能为空'));
-          }
-          setTimeout(() => {
-            if (!Number.isInteger(value)) {
-              callback(new Error('请输入数字值'));
-            } else {
-              callback();
-            }
-          }, 1000);
-        };
         var validatePass = (rule, value, callback) => {
           if (value === '') {
             callback(new Error('请输入密码'));
           } else {
-            if (this.ruleForm.checkPass !== '') {
-              this.$refs.ruleForm.validateField('checkPass');
+            if (this.ruleForm.checkPassword !== '') {
+              this.$refs.ruleForm.validateField('checkPassword');
             }
             callback();
           }
@@ -65,7 +56,7 @@
         var validatePass2 = (rule, value, callback) => {
           if (value === '') {
             callback(new Error('请再次输入密码'));
-          } else if (value !== this.ruleForm.pass) {
+          } else if (value !== this.ruleForm.password) {
             callback(new Error('两次输入密码不一致!'));
           } else {
             callback();
@@ -73,40 +64,53 @@
         };
         return {
           ruleForm: {
-            id:'',
-            pass: '',
-            checkPass: '',
-            telephone: ''
+            userId:'',
+            userName:'',
+            password: '',
+            checkPassword:'',
+            userType:'',
+            phoneNumber: '',
+            email:'',
+            headPhoto:'',
+            signature:''
           },
           rules: {
-            id: [
-              { validator: validateId, trigger: 'blur' }
+            userName: [
+              { required:true, trigger:'blur',message:'请输入用户名' }
             ],
-            pass: [
+            password: [
               { validator: validatePass, trigger: 'blur' }
             ],
-            checkPass: [
+            checkPassword: [
               { validator: validatePass2, trigger: 'blur' }
             ],
-            telephone: [
-              { validator: checkAge, trigger: 'blur' }
+            phoneNumber: [
+              {required:true, trigger:'blur',message:'请输入电话号码' }
+            ],
+            email: [
+              { required:true, trigger:'blur',message:'请输入邮箱'}
+            ],
+            signature:[
+              { required:true, trigger:'blur',message:'请输入个性签名'}
             ]
           }
         };
       },
       methods: {
-        submitForm(formName) {
-          this.$refs[formName].validate((valid) => {
+        submitForm() {
+          this.$refs.ruleForm.validate((valid) => {
             if (valid) {
-              alert('submit!');
-            } else {
-              console.log('error submit!!');
-              return false;
+              UserRegist(this.ruleForm).then(()=> {
+                alert('注册成功！')
+              })
             }
-          });
+          })
         },
         resetForm(formName) {
           this.$refs[formName].resetFields();
+        },
+        jumpto(){
+          this.$router.push('/login')
         }
       }
 
@@ -133,8 +137,8 @@
     display: block;
   }
   .total{
-    height: 400px;
-    margin-top: 150px;
+    height: 520px;
+    margin-top: 100px;
     width: 800px;
     border-radius: 20px;
     margin-left: 350px;
@@ -142,7 +146,7 @@
   }
   .content{
     display: inline-block;
-    height: 400px;
+    height: 520px;
     width: 400px;
     float:left;
     background-color: white;
@@ -158,6 +162,7 @@
   .possess{
     height: 50px;
     width: 400px;
+    margin-top:50px;
   }
 
   .el-row {
