@@ -16,9 +16,9 @@ ins_avail = false
 
 // connection pool for database
 const db = mysql.createPool({
-    host:'120.77.13.22',
+    host:'',
     user:'root',
-    password:'Aa020111',
+    password:'',
     database:'MMProj',
 })
 
